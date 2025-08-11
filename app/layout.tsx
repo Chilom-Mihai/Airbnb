@@ -1,6 +1,7 @@
-import Navbar from "@/components/navbar/Navbar";
-import type { Metadata } from "next";
 import { Inter } from "next/font/google";
+import type { Metadata } from "next";
+import React, { Suspense } from "react";
+import Navbar from "@/components/navbar/Navbar";
 import "./globals.css";
 import Providers from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
@@ -14,15 +15,17 @@ export const metadata: Metadata = {
 
 export default function RootLayout({
   children,
-}: Readonly<{
+}: {
   children: React.ReactNode;
-}>) {
+}) {
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
         <body className={inter.className}>
           <Providers>
-            <Navbar />
+            <Suspense fallback={<div>Loading navbar...</div>}>
+              <Navbar />
+            </Suspense>
             <main className="container py-10">{children}</main>
           </Providers>
         </body>
