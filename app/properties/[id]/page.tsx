@@ -14,7 +14,11 @@ import { redirect } from "next/navigation";
 import DynamicMap from "@/components/properties/DynamicMapClient";
 import BookingCalendarClient from "@/components/properties/BookingCalendarClient";
 
-async function PropertyDetailsPage({ params }: { params: { id: string } }) {
+type Props = {
+  params: Promise<{ id: string }>;
+};
+
+async function PropertyDetailsPage({ params }: Props) {
   const awaitedParams = await params;
   const property = await fetchPropertyDetails(awaitedParams.id);
 
