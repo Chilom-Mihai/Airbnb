@@ -8,11 +8,14 @@ import PropertyDetails from "@/components/properties/PropertyDetails";
 import ShareButton from "@/components/properties/ShareButton";
 import UserInfo from "@/components/properties/UserInfo";
 import { Separator } from "@/components/ui/separator";
-import { fetchPropertyDetails } from "@/utils/actions";
+import { fetchPropertyDetails, findExistingReview } from "@/utils/actions";
 import { redirect } from "next/navigation";
 
 import DynamicMap from "@/components/properties/DynamicMapClient";
 import BookingCalendarClient from "@/components/properties/BookingCalendarClient";
+import SubmitReview from "@/components/reviews/SubmitReview";
+import PropertyReviews from "@/components/reviews/PropertyReviews";
+import { auth } from "@clerk/nextjs/server";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -29,6 +32,10 @@ async function PropertyDetailsPage({ params }: Props) {
   const { baths, bedrooms, beds, guests } = property;
   const details = { baths, bedrooms, beds, guests };
   const { firstName, profileImage } = property.profile;
+  const { userId } = await auth();
+  const isNotOwner = property.profile.clerkId !== userId;
+  const reviewDoesNotExist =
+    userId && isNotOwner && !(await findExistingReview(userId, property.id));
 
   return (
     <section>
@@ -40,9 +47,7 @@ async function PropertyDetailsPage({ params }: Props) {
           <FavoriteToggleButton propertyId={property.id} />
         </div>
       </header>
-
       <ImageContainer mainImage={property.image} name={property.name} />
-
       <section className="lg:grid lg:grid-cols-12 gap-x-12 mt-12">
         <div className="lg:col-span-8">
           <div className="flex gap-x-4 items-center">
@@ -62,6 +67,8 @@ async function PropertyDetailsPage({ params }: Props) {
           <BookingCalendarClient />
         </div>
       </section>
+      {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}
+      <PropertyReviews propertyId={property.id} />
     </section>
   );
 }
