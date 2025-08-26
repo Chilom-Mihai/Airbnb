@@ -12,10 +12,19 @@ import { fetchPropertyDetails, findExistingReview } from "@/utils/actions";
 import { redirect } from "next/navigation";
 
 import DynamicMap from "@/components/properties/DynamicMapClient";
-import BookingCalendarClient from "@/components/properties/BookingCalendarClient";
-import SubmitReview from "@/components/reviews/SubmitReview";
+// import BookingCalendarClient from "@/components/properties/BookingCalendarClient";
+import BookingWrapperLoader from "@/components/booking/BookingWrapperLoader";
 import PropertyReviews from "@/components/reviews/PropertyReviews";
+import SubmitReview from "@/components/reviews/SubmitReview";
 import { auth } from "@clerk/nextjs/server";
+
+// const DynamicBookingWrapper = dynamic(
+//   () => import("@/components/booking/BookingWrapper"),
+//   {
+//     ssr: false,
+//     loading: () => <Skeleton className="h-[200px] w-full" />,
+//   }
+// );
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -64,7 +73,12 @@ async function PropertyDetailsPage({ params }: Props) {
         </div>
 
         <div className="lg:col-span-4 flex flex-col items-center">
-          <BookingCalendarClient />
+          {/* <BookingCalendarClient /> */}
+          <BookingWrapperLoader
+            propertyId={property.id}
+            price={property.price}
+            bookings={property.bookings}
+          />
         </div>
       </section>
       {reviewDoesNotExist && <SubmitReview propertyId={property.id} />}

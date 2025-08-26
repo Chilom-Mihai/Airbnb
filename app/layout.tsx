@@ -5,6 +5,7 @@ import Navbar from "@/components/navbar/Navbar";
 import "./globals.css";
 import Providers from "./providers";
 import { ClerkProvider } from "@clerk/nextjs";
+import { Toaster } from "sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -27,6 +28,7 @@ export default function RootLayout({
               <Navbar />
             </Suspense>
             <main className="container py-10">{children}</main>
+            <Toaster />
           </Providers>
         </body>
       </html>
