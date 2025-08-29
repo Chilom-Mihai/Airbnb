@@ -12,12 +12,17 @@ import UserIcon from "./UserIcon";
 import { links } from "@/utils/links";
 import SignOutLink from "./SignOutLink";
 import { SignedIn, SignedOut, SignInButton, SignUpButton } from "@clerk/nextjs";
+import AdminWrapper from "./AdminWrapper";
 
-function LinksDropdown() {
+const LinksDropdown = async () => {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="flex gap-4 max-w-[100px]">
+        <Button
+          aria-label="User menu"
+          variant="outline"
+          className="flex gap-4 max-w-[100px]"
+        >
           <LuAlignLeft className="w-6 h-6" />
           <UserIcon />
         </Button>
@@ -41,11 +46,21 @@ function LinksDropdown() {
         <SignedIn>
           {links.map((link) => (
             <DropdownMenuItem key={link.href}>
-              <Link href={link.href} className="capitalize w-full">
+              <Link href={link.href.trim()} className="capitalize w-full">
                 {link.label}
               </Link>
             </DropdownMenuItem>
           ))}
+
+          {/* Admin doar prin AdminWrapper */}
+          <AdminWrapper>
+            <DropdownMenuItem>
+              <Link href="/admin" className="capitalize w-full">
+                Admin
+              </Link>
+            </DropdownMenuItem>
+          </AdminWrapper>
+
           <DropdownMenuSeparator />
           <DropdownMenuItem>
             <SignOutLink />
@@ -54,6 +69,6 @@ function LinksDropdown() {
       </DropdownMenuContent>
     </DropdownMenu>
   );
-}
+};
 
 export default LinksDropdown;
